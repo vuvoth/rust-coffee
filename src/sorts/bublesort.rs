@@ -10,3 +10,17 @@ pub fn bubblesort(slice: &mut [i64]) {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn it_works() {
+        use super::bubblesort;
+        
+        let mut arr = vec![1, 7, 3, -9, 5];
+        
+        bubblesort(&mut arr);
+
+        assert_eq!(arr, vec![-9, 1, 3, 5, 7]);
+    }
+}
