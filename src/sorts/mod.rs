@@ -1,5 +1,5 @@
-mod bublesort;
+mod bubblesort;
 mod insertsort;
 
-pub use bublesort::bubblesort;
+pub use bubblesort::bubblesort;
 pub use insertsort::insertsort;
