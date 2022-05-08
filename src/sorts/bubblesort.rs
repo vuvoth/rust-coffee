@@ -11,26 +11,36 @@ pub fn bubblesort<T>(slice: &mut [T]) where T: Ord {
     }
 }
 
+macro_rules! sort_test_template {
+    ($suit_name:ident, $value: expr, $sort_program:expr) => {
+        #[test] 
+        fn $suit_name() {
+            let mut input = Vec::from($value);
+            let mut output = Vec::from($value);
+            $sort_program(&mut input);
+            output.sort();
+            assert_eq!(input, output);
+        }
+    };
+
+    ($suit_name:ident, $sort_program:expr) => {
+        #[test] 
+        fn $suit_name() {
+            let mut input: Vec<i32> = Vec::new();
+            $sort_program(&mut input);
+            assert_eq!(input, vec![]);
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::bubblesort;
 
-    #[test]
-    fn it_works_with_i32_vector() {
+    
+    sort_test_template! {normal_case, [5, 4, 10, 4, -10], bubblesort}
 
-        let mut arr = vec![1, 7, 3, -9, 5];
-        
-        bubblesort(&mut arr);
+    sort_test_template! {one_element, [4], bubblesort} 
 
-        assert_eq!(arr, vec![-9, 1, 3, 5, 7]);
-    }
-
-    #[test]
-    fn it_works_with_chars() {
-        let mut arr = vec!['a', 'e', 'c'];
-
-        bubblesort(&mut arr);
-
-        assert_eq!(arr, vec!['a', 'c', 'e']);
-    }
+    sort_test_template! {empty, bubblesort}
 }

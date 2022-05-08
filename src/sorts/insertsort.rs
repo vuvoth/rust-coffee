@@ -10,30 +10,37 @@ pub fn insertsort<T>(slice: &mut [T]) where T: Ord {
     }
 }
 
+macro_rules! sort_test_template {
+    ($suit_name:ident, $value: expr, $sort_program:expr) => {
+        #[test] 
+        fn $suit_name() {
+            let mut input = Vec::from($value);
+            let mut output = Vec::from($value);
+            $sort_program(&mut input);
+            output.sort();
+            assert_eq!(input, output);
+        }
+    };
+
+    ($suit_name:ident, $sort_program:expr) => {
+        #[test] 
+        fn $suit_name() {
+            let mut input: Vec<i32> = Vec::new();
+            $sort_program(&mut input);
+            assert_eq!(input, vec![]);
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
+
     use super::insertsort;
 
-    #[test]
-    fn it_works() {
-        let mut arr = vec![1, 10, 5, 5, -9];
-        insertsort(&mut arr);
-        
-        assert_eq!(arr, vec![-9, 1, 5, 5, 10]);
-    }
+    sort_test_template! {normal_case, [5, 4, 10, 4, -10], insertsort}
 
-    #[test]
-    fn it_works_one_element() {
-        let mut arr = vec![1];
-        insertsort(&mut arr);
-        
-        assert_eq!(arr, vec![1]);
-    }
+    sort_test_template! {one_element, [4], insertsort} 
 
-    #[test]
-    fn it_works_empty_list() {
-        let mut arr: Vec<i32> = Vec::new();
-        insertsort(&mut arr);
-        assert_eq!(arr, []);
-    }
+    sort_test_template! {empty, insertsort}
+
 }
