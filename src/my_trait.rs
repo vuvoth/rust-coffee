@@ -46,11 +46,11 @@ struct Circuit<T: IVC> {
     ivc: T,
 }
 
-struct CustomCircom<T: IVC> {
+struct CustomDefaultCircuit<T: IVC> {
     ivc: T,
 }
 
-impl<T: IVC> FoldingCircuit<T> for CustomCircom<T> {
+impl<T: IVC> FoldingCircuit<T> for CustomDefaultCircuit<T> {
     fn get_ivc(&self) -> &T {
         &self.ivc        
     }
@@ -75,7 +75,7 @@ fn tests() {
     // compute noir
     // custom IVC
 
-    let d = CustomCircom {ivc: Circom {}};
+    let d = CustomDefaultCircuit {ivc: Circom {}};
     d.step_native();
     
 }
