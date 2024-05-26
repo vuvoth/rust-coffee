@@ -1,72 +1,75 @@
 struct Circom;
 struct Noir;
 
-trait IVC {
-    fn compute(&self);
+trait IVCFunction {
+    fn step_native(&self);
+    fn constraint(&self) {
+        println!("This is constraint by default");
+    }
 }
 
-impl IVC for Circom {
-    fn compute(&self) {
+impl IVCFunction for Circom {
+    fn step_native(&self) {
         println!("compute circom");
     }
 }
 
-impl IVC for Noir {
-    fn compute(&self) {
+impl IVCFunction for Noir {
+    fn step_native(&self) {
         println!("compute noir");
     }
 }
 
-trait FoldingCircuit<T: IVC> {
-    fn get_ivc(&self) -> &T;
+trait FCircuit<T: IVCFunction> {
+    fn functional(&self) -> &T;
     fn step_native(&self) {
-        self.get_ivc().compute();
+        self.functional().step_native();
     }
 
     fn constraint(&self) {
-        self.get_ivc().compute();
+        self.functional().constraint();
     }
 }
 
-impl<T: IVC> FoldingCircuit<T> for Circuit<T> {
-    fn get_ivc(&self) -> &T {
-        &self.ivc
+impl<T: IVCFunction> FCircuit<T> for Circuit<T> {
+    fn functional(&self) -> &T {
+        &self.func
     }
 }
 
 struct CustomIVC {}
 
-impl IVC for CustomIVC {
-    fn compute(&self) {
+impl IVCFunction for CustomIVC {
+    fn step_native(&self) {
         println!("custom IVC");
     }
 }
 
-struct Circuit<T: IVC> {
-    ivc: T,
+struct Circuit<T: IVCFunction> {
+    func: T,
 }
 
-struct CustomDefaultCircuit<T: IVC> {
-    ivc: T,
+struct CustomDefaultCircuit<T: IVCFunction> {
+    func: T,
 }
 
-impl<T: IVC> FoldingCircuit<T> for CustomDefaultCircuit<T> {
-    fn get_ivc(&self) -> &T {
-        &self.ivc        
+impl<T: IVCFunction> FCircuit<T> for CustomDefaultCircuit<T> {
+    fn functional(&self) -> &T {
+        &self.func        
     }
 
     fn step_native(&self) {
-        println!("This is custom circom circuit");
+        println!("This is custom circuit in rust");
     }
 }
 
 #[test]
 fn tests() {
     // Circom and noir is default IVC
-    let a = Circuit { ivc: Circom {} };
+    let a = Circuit { func: Circom {} };
 
-    let b = Circuit { ivc: Noir {} };
-    let c = Circuit { ivc: CustomIVC {} };
+    let b = Circuit { func: Noir {} };
+    let c = Circuit { func: CustomIVC {} };
 
     a.step_native();
     b.step_native();
@@ -75,7 +78,8 @@ fn tests() {
     // compute noir
     // custom IVC
 
-    let d = CustomDefaultCircuit {ivc: Circom {}};
-    d.step_native();
-    
+    let d = CustomDefaultCircuit {func: Circom {}};
+    d.step_native(); 
+    // this is custom circuit
+
 }
